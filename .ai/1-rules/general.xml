@@ -1,0 +1,40 @@
+<coding_standards priority="2" status="immutable">
+
+    <empirical_validation priority="critical">
+        <rule id="VAL_01" priority="blocker">Turn Decoupling: "The Agent is prohibited from proposing an Action Plan and executing modification tools in the same conversational turn. A mandatory user confirmation ('Ejecuta') is required to bridge the gap between planning and execution.</rule>
+        <rule id="VAL_02" priority="blocker">No Assumption: You are strictly forbidden from reporting the success of an action (file creation, modification, or deletion) without performing a real-time directory/file check.</rule>
+        <rule id="VAL_03" priority="critical">Fact-Based Reporting: Status updates must reflect the actual content of the local workspace, not the history of the conversation or predicted outcomes.</rule>
+        <rule id="VAL_04" priority="high">Evidence-First: When confirming a task, you must provide specific evidence (e.g., file path, line count, or specific command output) to validate the current state.</rule>
+    </empirical_validation>
+
+    <java_style_guidelines>
+        <rule id="JAVA_01" priority="critical">Use Java 25 Records for all DTOs and internal data carriers to ensure immutability.</rule>
+        <rule id="JAVA_02" priority="high">Leverage Virtual Threads (Loom) for I/O bound operations, especially in mail sending tasks.</rule>
+        <rule id="JAVA_03" priority="medium">Use Pattern Matching and Sequenced Collections to improve code clarity.</rule>
+        <rule id="JAVA_04" priority="high">Field-based dependency injection via @Autowired is the project standard for brevity.</rule>
+    </java_style_guidelines>
+
+    <structured_logging_and_tracing>
+        <rule id="LOG_01" priority="critical">Semantic Logging: All logs must follow a structured format (JSON-ready) with clear key-value pairs.</rule>
+        <rule id="LOG_02" priority="critical">Traceability: Use MDC (Mapped Diagnostic Context) to propagate a unique 'correlation_id' across all layers (api -> service -> integration).</rule>
+        <rule id="LOG_03" priority="high">Level Discipline:
+            - ERROR: System failures or unrecoverable business errors (includes stack trace and context).
+            - WARN: Unexpected behavior that doesn't stop the flow (e.g., API retries).
+            - INFO: Major business milestones (e.g., "EMAIL_SENT_SUCCESS", "OAUTH_TOKEN_REFRESHED").
+            - DEBUG: Detailed flow information for troubleshooting.
+        </rule>
+        <rule id="LOG_04" priority="high">Avoid String Concatenation: Always use placeholders (e.g., logger.info("Sending email to {}", emailAddr)) to optimize performance and prevent log injection.</rule>
+        <rule id="LOG_05" priority="medium">Event Categorization: Every log entry should include an 'event_type' tag (e.g., SECURITY, PERFORMANCE, BUSINESS_LOGIC).</rule>
+    </structured_logging_and_tracing>
+
+    <layer_interaction_rules>
+        <rule id="LAYER_01" priority="critical">Communication between 'api' -> 'service' and 'service' -> 'integration' must occur ONLY through Interfaces.</rule>
+        <rule id="LAYER_02" priority="critical">Mapping Strategy: Use MapStruct or dedicated mapper classes to prevent SDK model leakage into the service layer.</rule>
+    </layer_interaction_rules>
+
+    <api_first_implementation>
+        <rule id="API_01" priority="critical">Strict API-First: No controller implementation is allowed without a predefined and validated OpenAPI contract in 'docs/specs/openapi.yaml'.</rule>
+        <rule id="API_02" priority="high">Standardized Error Response: All API errors must return a consistent JSON body (timestamp, code, message, path).</rule>
+        <rule id="API_03" priority="high">Dual Generation Strategy: Use OpenAPI generator exclusively for Controller Interfaces. DTOs and internal models MUST be implemented as manual Java 25 Records to ensure immutability and Jakarta EE 10 compatibility.</rule>
+    </api_first_implementation>
+</coding_standards>

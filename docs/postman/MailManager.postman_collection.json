@@ -1,0 +1,88 @@
+{
+  "info": {
+    "name": "MailManager API",
+    "description": "Colección oficial para consumir el microservicio MailManager. Incluye configuración OAuth 2.0 predefinida.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Emails",
+      "item": [
+        {
+          "name": "Send Corporate Email",
+          "request": {
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "addTokenTo",
+                  "value": "header",
+                  "type": "string"
+                },
+                {
+                  "key": "grant_type",
+                  "value": "authorization_code",
+                  "type": "string"
+                },
+                {
+                  "key": "authUrl",
+                  "value": "https://accounts.google.com/o/oauth2/v2/auth",
+                  "type": "string"
+                },
+                {
+                  "key": "accessTokenUrl",
+                  "value": "https://oauth2.googleapis.com/token",
+                  "type": "string"
+                },
+                {
+                  "key": "scope",
+                  "value": "https://www.googleapis.com/auth/gmail.send",
+                  "type": "string"
+                },
+                {
+                  "key": "useBrowser",
+                  "value": false,
+                  "type": "boolean"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "X-Correlation-ID",
+                "value": "POSTMAN-TEST-{{$guid}}",
+                "type": "text",
+                "description": "ID único para trazabilidad MDC"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"to\": \"destinatario@empresa.com\",\n  \"subject\": \"Prueba de Integración Postman\",\n  \"body\": \"Este es un correo de prueba enviado desde la colección oficial de Postman, utilizando un token JWT válido.\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8085/api/v1/emails/send",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8085",
+              "path": [
+                "api",
+                "v1",
+                "emails",
+                "send"
+              ]
+            },
+            "description": "Envía un correo electrónico. Requiere un token JWT válido en la cabecera Authorization."
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

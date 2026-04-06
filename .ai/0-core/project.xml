@@ -1,0 +1,63 @@
+<project_identity priority="0" status="immutable" version="1.6">
+    <metadata>
+        <name>MailManager</name>
+        <development_approach>API-First</development_approach>
+        <objective>Decoupled microservice for secure corporate email management via Google API.</objective>
+    </metadata>
+
+    <runtime_environment>
+        <language priority="critical">
+            <name>Java</name>
+            <distribution>Oracle JDK (Official Binary)</distribution>
+            <version>25 (LTS)</version>
+            <features_focus>Virtual Threads (Project Loom), Sequenced Collections</features_focus>
+        </language>
+        <framework priority="high">
+            <name>Spring Boot</name>
+            <version>3.6.x (Latest Stable 3.x branch)</version>
+            <web_server>Embedded Tomcat (HTTP/2 enabled)</web_server>
+        </framework>
+    </runtime_environment>
+
+    <api_specification type="api-first">
+        <standard>OpenAPI 3.1</standard>
+        <tooling>SpringDoc OpenAPI (Swagger UI)</tooling>
+        <generation_strategy>Interface generation from YAML contract</generation_strategy>
+        <ui_endpoint>/swagger-ui.html</ui_endpoint>
+    </api_specification>
+
+    <containerization priority="critical" type="docker-native">
+        <base_image priority="blocker">oraclelinux:9-slim-jdk25</base_image>
+        <security_posture>
+            <non_root_user>true</non_root_user>
+            <read_only_root_filesystem>true</read_only_root_filesystem>
+            <attack_surface_reduction>Minimal binaries, no shell in production</attack_surface_reduction>
+        </security_posture>
+        <build_strategy>Cloud Native Buildpacks (Tiny Stack)</build_strategy>
+    </containerization>
+
+    <external_integrations>
+        <provider id="google-cloud" priority="critical">
+            <service>Gmail API v1</service>
+            <authentication_method>OAuth 2.0 + PKCE</authentication_method>
+            <api_scope>https://www.googleapis.com/auth/gmail.send</api_scope>
+            <library_reference>com.google.api-client:google-api-services-gmail</library_reference>
+        </provider>
+    </external_integrations>
+
+    <architecture_constraints>
+        <pattern priority="critical">Decoupled N-Tier (Interface-Driven)</pattern>
+        <layers>
+            <layer id="api">Generated Controllers, OpenAPI models, Request Mapping</layer>
+            <layer id="service">Business Rules, Service Interfaces, Internal Records (DTOs)</layer>
+            <layer id="integration">Gmail SDK Adapters, OAuth2 Token Management</layer>
+        </layers>
+        <data_rules>
+            <rule>API-First: Controllers must implement generated interfaces from contract.</rule>
+            <rule>Strict Decoupling: Layers must communicate via Interfaces only.</rule>
+            <rule>Isolation: The 'service' layer is forbidden from importing Google Gmail SDK classes.</rule>
+            <rule>Type Safety: Use Java 25 Records for all internal data transfer.</rule>
+        </data_rules>
+        <build_system>Maven</build_system>
+    </architecture_constraints>
+</project_identity>

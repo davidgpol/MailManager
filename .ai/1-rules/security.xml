@@ -1,0 +1,23 @@
+<security_rules priority="1" status="immutable">
+    <google_oauth2_protocol>
+        <rule id="SEC_01" priority="blocker">OAuth 2.0 Flow: Mandatory use of 'Authorization Code Flow' with PKCE (Proof Key for Code Exchange) for the confidential client.</rule>
+        <rule id="SEC_02" priority="critical">Scope Restriction: Strictly limit scopes to 'https://www.googleapis.com/auth/gmail.send'. Do not request full account access.</rule>
+        <rule id="SEC_03" priority="critical">Token Management: Implement 'offline access' to obtain Refresh Tokens. Refresh Tokens must be stored securely (encrypted at rest if persisted).</rule>
+        <rule id="SEC_04" priority="high">Token Relaying: If the microservice acts as a proxy, ensure the original user context is preserved or use a service account with delegated authority where applicable.</rule>
+    </google_oauth2_protocol>
+
+    <spring_security_configuration>
+        <rule id="SEC_05" priority="critical">Stateful vs Stateless: The API must be Stateless (SessionCreationPolicy.STATELESS) using JWT for inbound authentication.</rule>
+        <rule id="SEC_06" priority="high">CSRF &amp; CORS: Disable CSRF for the API layer (since it is stateless). Configure a strict CORS policy allowing only authorized internal domains.</rule>
+        <rule id="SEC_07" priority="critical">Sensitive Data: Prohibit hardcoding Client Secrets or API Keys. Use Spring 'Environment' or 'Vault' integration.</rule>
+    </spring_security_configuration>
+
+    <api_and_swagger_protection>
+        <rule id="SEC_08" priority="high">Public Endpoints: Only /swagger-ui.html, /v3/api-docs/**, and /actuator/health/** are permitted for unauthenticated access.</rule>
+        <rule id="SEC_09" priority="critical">Business Endpoints: All /api/** paths must require a valid Bearer Token with specific 'SCOPE_mail.write' authority.</rule>
+    </api_and_swagger_protection>
+
+    <implementation_details>
+        <rule id="SEC_10" priority="critical">Server-to-Server Auth: Use Native Google SDK ('GoogleCredentials') with injected Refresh Tokens for automated token lifecycle management in Headless/CLI modes, strictly bypassing Spring Security OAuth2 Client session dependencies.</rule>
+    </implementation_details>
+</security_rules>

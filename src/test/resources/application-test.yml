@@ -1,0 +1,22 @@
+spring:
+  main:
+    banner-mode: "off"
+  logging:
+    structured:
+      format:
+        console: json
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: dummy-id
+            client-secret: dummy-secret
+        provider:
+          google:
+            authorization-uri: http://localhost:9999/auth
+            token-uri: http://localhost:9999/token
+      resourceserver:
+        jwt:
+          # No ponemos issuer-uri para evitar la llamada de descubrimiento en tests
+          public-key-location: classpath:dummy.pub # No se usará realmente por el mock
